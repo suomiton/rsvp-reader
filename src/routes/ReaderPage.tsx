@@ -17,6 +17,7 @@ export function ReaderPage() {
 
 	const [savedWpm, setSavedWpm] = useLocalStorage("rsvp-wpm", 300);
 	const [finished, setFinished] = useState(false);
+	const [isFocusMode, setIsFocusMode] = useState(false);
 
 	const isPlayingRef = useRef(false);
 	const indexRef = useRef(state.index);
@@ -45,6 +46,7 @@ export function ReaderPage() {
 		if (indexRef.current >= tokensLength - 1) {
 			setFinished(true);
 			isPlayingRef.current = false;
+			setIsFocusMode(false);
 			return false;
 		}
 		dispatch({ type: "STEP_FORWARD" });
@@ -62,27 +64,46 @@ export function ReaderPage() {
 		setSavedWpm(value);
 	}
 
-	function handlePlayStart() {
+	function startPlaying() {
 		if (finished) return;
 		isPlayingRef.current = true;
+		setIsFocusMode(true);
 		timerStart();
 	}
 
-	function handlePlayStop() {
+	function stopPlaying() {
 		isPlayingRef.current = false;
+		setIsFocusMode(false);
 		timerStop();
 	}
 
+	function togglePlayPause() {
+		if (isPlayingRef.current) {
+			stopPlaying();
+		} else {
+			startPlaying();
+		}
+	}
+
+	function handleContainerClick() {
+		if (isPlayingRef.current) {
+			stopPlaying();
+		}
+	}
+
 	useKeyboard({
-		onSpaceDown: handlePlayStart,
-		onSpaceUp: handlePlayStop,
+		onSpaceToggle: togglePlayPause,
 		onArrowLeft: () => {
-			if (isPlayingRef.current) return;
+			if (isPlayingRef.current) {
+				stopPlaying();
+			}
 			if (finished) setFinished(false);
 			dispatch({ type: "STEP_BACK" });
 		},
 		onArrowRight: () => {
-			if (isPlayingRef.current) return;
+			if (isPlayingRef.current) {
+				stopPlaying();
+			}
 			if (indexRef.current >= tokensLength - 1) {
 				setFinished(true);
 				return;
@@ -91,8 +112,11 @@ export function ReaderPage() {
 			dispatch({ type: "STEP_FORWARD" });
 		},
 		onEscape: () => {
-			handlePlayStop();
-			navigate("/");
+			if (isPlayingRef.current) {
+				stopPlaying();
+			} else {
+				navigate("/");
+			}
 		},
 	});
 
@@ -114,59 +138,73 @@ export function ReaderPage() {
 			<div
 				ref={containerRef}
 				tabIndex={-1}
-				className="flex-1 flex flex-col outline-none"
+				onClick={handleContainerClick}
+				className="relative flex-1 flex items-center justify-center outline-none cursor-pointer"
 			>
-				{/* Top bar */}
-				<div className="flex items-center justify-between p-3">
-					<button
-						type="button"
-						onClick={() => {
-							handlePlayStop();
-							navigate("/");
-						}}
-						className="flex items-center gap-0.5 text-gray/50 hover:text-gray transition-colors cursor-pointer"
-						aria-label="Back to editor"
-					>
-						<Back theme="outline" size="18" fill="currentColor" />
-						<span className="text-sm">Back</span>
-					</button>
-					<span className="text-sm text-gray/50">
-						{state.index + 1} / {state.tokens.length}
-					</span>
+				{/* Top bar - positioned absolutely */}
+				{!isFocusMode && (
+					<div className="absolute top-0 left-0 right-0 flex items-center justify-between p-3">
+						<button
+							type="button"
+							onClick={(e) => {
+								e.stopPropagation();
+								stopPlaying();
+								navigate("/");
+							}}
+							className="flex items-center gap-0.5 text-gray/50 hover:text-gray transition-colors cursor-pointer"
+							aria-label="Back to editor"
+						>
+							<Back theme="outline" size="18" fill="currentColor" />
+							<span className="text-sm">Back</span>
+						</button>
+						<span className="text-sm text-gray/50">
+							{state.index + 1} / {state.tokens.length}
+						</span>
+					</div>
+				)}
+
+				{/* Center word display - always centered */}
+				<div className="w-full max-w-[800px] flex flex-col items-center px-3">
+					<WordDisplay model={currentModel} finished={finished} />
 				</div>
 
-				{/* Center word display */}
-				<div className="flex-1 flex items-center justify-center px-3">
-					<div className="w-full max-w-[800px] flex flex-col items-center">
-						<WordDisplay model={currentModel} finished={finished} />
+				{/* Play button and hint - positioned absolutely below word */}
+				{!isFocusMode && (
+					<div
+						onClick={(e) => e.stopPropagation()}
+						className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-[120px] flex flex-col items-center"
+					>
 						<PlayButton
-							onHoldStart={handlePlayStart}
-							onHoldEnd={handlePlayStop}
+							isPlaying={isPlayingRef.current}
+							onClick={togglePlayPause}
 							disabled={finished}
-							className="mt-6"
 						/>
-						<p className="text-center text-gray/50 text-sm mt-3">
-							Hold button or spacebar to read
+						<p className="text-center text-gray/50 text-sm mt-3 whitespace-nowrap">
+							Click play or press spacebar to start
 						</p>
 					</div>
-				</div>
+				)}
 
-				{/* Bottom controls */}
-				<div className="flex items-center justify-between p-3">
-					<NumberInput
-						label="WPM"
-						value={state.wpm}
-						onChange={handleWpmChange}
-						min={50}
-						max={1200}
-						step={10}
-					/>
-					<span className="flex items-center gap-0.5 text-sm text-gray/40 hidden sm:inline-flex">
-						<Left theme="outline" size="14" fill="currentColor" />
-						<Right theme="outline" size="14" fill="currentColor" />
-						to step &middot; ESC to go back
-					</span>
-				</div>
+				{/* Bottom controls - positioned absolutely */}
+				{!isFocusMode && (
+					<div className="absolute bottom-0 left-0 right-0 flex items-center justify-between p-3">
+						<div onClick={(e) => e.stopPropagation()}>
+							<NumberInput
+								label="WPM"
+								value={state.wpm}
+								onChange={handleWpmChange}
+								min={50}
+								max={1200}
+								step={10}
+							/>
+						</div>
+						<span className="flex items-center gap-0.5 text-sm text-gray/40 hidden sm:inline-flex">
+							<Left theme="outline" size="14" fill="currentColor" />
+							<Right theme="outline" size="14" fill="currentColor" />
+							to step &middot; ESC to go back
+						</span>
+					</div>
+				)}
 			</div>
 		</PageShell>
 	);
