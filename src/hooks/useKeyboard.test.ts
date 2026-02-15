@@ -239,7 +239,10 @@ describe("useKeyboard", () => {
 				code: "Space",
 				bubbles: true,
 			});
-			Object.defineProperty(event, "target", { value: input, enumerable: true });
+			Object.defineProperty(event, "target", {
+				value: input,
+				enumerable: true,
+			});
 
 			window.dispatchEvent(event);
 
@@ -294,7 +297,10 @@ describe("useKeyboard", () => {
 				code: "ArrowLeft",
 				bubbles: true,
 			});
-			Object.defineProperty(event, "target", { value: input, enumerable: true });
+			Object.defineProperty(event, "target", {
+				value: input,
+				enumerable: true,
+			});
 
 			window.dispatchEvent(event);
 
@@ -320,7 +326,10 @@ describe("useKeyboard", () => {
 				code: "Escape",
 				bubbles: true,
 			});
-			Object.defineProperty(event, "target", { value: input, enumerable: true });
+			Object.defineProperty(event, "target", {
+				value: input,
+				enumerable: true,
+			});
 
 			window.dispatchEvent(event);
 
@@ -382,9 +391,7 @@ describe("useKeyboard", () => {
 
 			rerender({ h: handlers2 });
 
-			window.dispatchEvent(
-				new KeyboardEvent("keydown", { code: "ArrowLeft" }),
-			);
+			window.dispatchEvent(new KeyboardEvent("keydown", { code: "ArrowLeft" }));
 			expect(handlers2.onArrowLeft).toHaveBeenCalledTimes(1);
 			expect(handlers1.onArrowLeft).not.toHaveBeenCalled();
 		});

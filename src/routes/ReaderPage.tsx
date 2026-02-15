@@ -148,11 +148,11 @@ export function ReaderPage() {
 				ref={containerRef}
 				tabIndex={-1}
 				onClick={handleContainerClick}
-				className="relative flex-1 flex items-center justify-center outline-none cursor-pointer"
+				className="relative flex-1 flex items-center justify-center outline-none cursor-pointer overflow-hidden"
 			>
 				{/* Top bar - positioned absolutely */}
 				{!isFocusMode && (
-					<div className="absolute top-0 left-0 right-0 grid grid-cols-[auto_1fr_auto] items-center gap-3 p-3">
+					<div className="absolute top-0 left-0 right-0 grid grid-cols-[auto_1fr_auto] items-center gap-3 p-2 sm:p-3 z-10">
 						<button
 							type="button"
 							onClick={(e) => {
@@ -180,23 +180,23 @@ export function ReaderPage() {
 					</div>
 				)}
 
-				{/* Center word display - always centered */}
-				<div className="w-full max-w-[800px] flex flex-col items-center px-3">
+				{/* Center word display - absolutely centered */}
+				<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] flex flex-col items-center px-3">
 					<WordDisplay model={currentModel} finished={finished} />
 				</div>
 
-				{/* Play button and hint - positioned absolutely below word */}
+				{/* Play button and hint - positioned below center with safe margin */}
 				{!isFocusMode && (
 					<div
 						onClick={(e) => e.stopPropagation()}
-						className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-[120px] flex flex-col items-center"
+						className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-[80px] [@media(orientation:landscape)]:translate-y-[40px] md:translate-y-[120px] flex flex-col items-center z-10"
 					>
 						<PlayButton
 							isPlaying={isPlayingRef.current}
 							onClick={togglePlayPause}
 							disabled={finished}
 						/>
-						<p className="text-center text-gray/50 text-sm mt-3 whitespace-nowrap">
+						<p className="text-center text-gray/50 text-xs sm:text-sm mt-1 sm:mt-2 whitespace-nowrap [@media(orientation:landscape)]:hidden md:[@media(orientation:landscape)]:block">
 							Click play or press spacebar to start
 						</p>
 					</div>
@@ -204,7 +204,7 @@ export function ReaderPage() {
 
 				{/* Bottom controls - positioned absolutely */}
 				{!isFocusMode && (
-					<div className="absolute bottom-0 left-0 right-0 flex items-center justify-between p-3">
+					<div className="absolute bottom-0 left-0 right-0 flex items-center justify-between p-2 sm:p-3 z-10">
 						<div onClick={(e) => e.stopPropagation()}>
 							<NumberInput
 								label="WPM"

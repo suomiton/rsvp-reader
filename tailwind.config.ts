@@ -34,7 +34,7 @@ const config: Config = {
 				heading: ["2rem", { lineHeight: "1.2" }],
 			},
 			fontFamily: {
-				mono: ['"JetBrains Mono"', '"Fira Code"', "monospace"],
+				mono: ['"Atkinson Hyperlegible Mono"', "monospace"],
 				sans: ['"Inter"', "system-ui", "sans-serif"],
 			},
 		},

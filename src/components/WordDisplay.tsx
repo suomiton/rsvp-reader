@@ -8,18 +8,18 @@ interface WordDisplayProps {
 export function WordDisplay({ model, finished }: WordDisplayProps) {
 	if (finished) {
 		return (
-			<div className="font-mono text-display text-amber font-bold">
+			<div className="font-mono text-4xl sm:text-5xl lg:text-display text-amber font-bold">
 				Finished
 			</div>
 		);
 	}
 
 	if (!model) {
-		return <div className="font-mono text-display text-gray/30">&mdash;</div>;
+		return <div className="font-mono text-4xl sm:text-5xl lg:text-display text-gray/30">&mdash;</div>;
 	}
 
 	return (
-		<div className="flex items-baseline font-mono text-display select-none">
+		<div className="flex items-baseline font-mono text-4xl sm:text-5xl lg:text-display select-none">
 			<span className="text-right flex-1 text-gray">{model.prefix}</span>
 			<span className="text-amber font-bold w-[1ch] text-center">
 				{model.highlight}

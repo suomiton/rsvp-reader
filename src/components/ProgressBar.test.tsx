@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, act } from "@testing-library/react";
+import { render, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ProgressBar } from "./ProgressBar";
 
@@ -18,9 +18,7 @@ describe("ProgressBar", () => {
 				<ProgressBar current={5} total={11} onSeek={vi.fn()} />,
 			);
 
-			const progressFill = container.querySelector(
-				".bg-amber",
-			) as HTMLElement;
+			const progressFill = container.querySelector(".bg-amber") as HTMLElement;
 			expect(progressFill).toBeInTheDocument();
 			// 5 / (11 - 1) * 100 = 50%
 			expect(progressFill.style.width).toBe("50%");
@@ -31,9 +29,7 @@ describe("ProgressBar", () => {
 				<ProgressBar current={0} total={10} onSeek={vi.fn()} />,
 			);
 
-			const progressFill = container.querySelector(
-				".bg-amber",
-			) as HTMLElement;
+			const progressFill = container.querySelector(".bg-amber") as HTMLElement;
 			expect(progressFill.style.width).toBe("0%");
 		});
 
@@ -42,9 +38,7 @@ describe("ProgressBar", () => {
 				<ProgressBar current={9} total={10} onSeek={vi.fn()} />,
 			);
 
-			const progressFill = container.querySelector(
-				".bg-amber",
-			) as HTMLElement;
+			const progressFill = container.querySelector(".bg-amber") as HTMLElement;
 			expect(progressFill.style.width).toBe("100%");
 		});
 
@@ -53,9 +47,7 @@ describe("ProgressBar", () => {
 				<ProgressBar current={0} total={0} onSeek={vi.fn()} />,
 			);
 
-			const progressFill = container.querySelector(
-				".bg-amber",
-			) as HTMLElement;
+			const progressFill = container.querySelector(".bg-amber") as HTMLElement;
 			expect(progressFill.style.width).toBe("0%");
 		});
 
@@ -309,7 +301,6 @@ describe("ProgressBar", () => {
 			});
 
 			expect(onSeek).toHaveBeenCalled();
-			const callCount = onSeek.mock.calls.length;
 
 			// Note: Full drag testing requires pointer capture support
 			// which is complex to test in jsdom
@@ -373,9 +364,7 @@ describe("ProgressBar", () => {
 				<ProgressBar current={0} total={1} onSeek={vi.fn()} />,
 			);
 
-			const progressFill = container.querySelector(
-				".bg-amber",
-			) as HTMLElement;
+			const progressFill = container.querySelector(".bg-amber") as HTMLElement;
 			expect(progressFill).toBeInTheDocument();
 		});
 
@@ -384,9 +373,7 @@ describe("ProgressBar", () => {
 				<ProgressBar current={500} total={1000} onSeek={vi.fn()} />,
 			);
 
-			const progressFill = container.querySelector(
-				".bg-amber",
-			) as HTMLElement;
+			const progressFill = container.querySelector(".bg-amber") as HTMLElement;
 			// 500 / (1000 - 1) * 100 ≈ 50.05%
 			const width = parseFloat(progressFill.style.width);
 			expect(width).toBeCloseTo(50, 0); // Within 1% tolerance
@@ -397,9 +384,7 @@ describe("ProgressBar", () => {
 				<ProgressBar current={15} total={10} onSeek={vi.fn()} />,
 			);
 
-			const progressFill = container.querySelector(
-				".bg-amber",
-			) as HTMLElement;
+			const progressFill = container.querySelector(".bg-amber") as HTMLElement;
 			// Should cap at 100% or handle overflow gracefully
 			const width = parseFloat(progressFill.style.width);
 			expect(width).toBeGreaterThanOrEqual(0);
@@ -464,9 +449,7 @@ describe("ProgressBar", () => {
 				<ProgressBar current={-1} total={10} onSeek={vi.fn()} />,
 			);
 
-			const progressFill = container.querySelector(
-				".bg-amber",
-			) as HTMLElement;
+			const progressFill = container.querySelector(".bg-amber") as HTMLElement;
 			// Should handle gracefully (negative percentage)
 			expect(progressFill).toBeInTheDocument();
 		});

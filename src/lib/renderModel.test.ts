@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { buildRenderModel, buildRenderModels } from "./renderModel";
-import type { RenderModel } from "../state/types";
 
 describe("buildRenderModel", () => {
 	describe("basic splitting", () => {
@@ -175,18 +174,10 @@ describe("buildRenderModel", () => {
 		});
 
 		it("should reconstruct all tokens correctly", () => {
-			const tokens = [
-				"Hello,",
-				"world!",
-				"This",
-				"is",
-				"RSVP",
-				"Reader.",
-			];
+			const tokens = ["Hello,", "world!", "This", "is", "RSVP", "Reader."];
 			tokens.forEach((token) => {
 				const result = buildRenderModel(token);
-				const reconstructed =
-					result.prefix + result.highlight + result.suffix;
+				const reconstructed = result.prefix + result.highlight + result.suffix;
 				expect(reconstructed).toBe(token);
 			});
 		});
@@ -227,14 +218,7 @@ describe("buildRenderModels", () => {
 	});
 
 	it("should handle typical paragraph", () => {
-		const tokens = [
-			"RSVP",
-			"Reader",
-			"is",
-			"a",
-			"speed-reading",
-			"app.",
-		];
+		const tokens = ["RSVP", "Reader", "is", "a", "speed-reading", "app."];
 		const result = buildRenderModels(tokens);
 
 		expect(result).toHaveLength(6);
@@ -244,14 +228,7 @@ describe("buildRenderModels", () => {
 	});
 
 	it("should reconstruct all original tokens", () => {
-		const tokens = [
-			"Hello,",
-			"world!",
-			"This",
-			"is",
-			"a",
-			"test.",
-		];
+		const tokens = ["Hello,", "world!", "This", "is", "a", "test."];
 		const result = buildRenderModels(tokens);
 
 		result.forEach((model, i) => {
@@ -270,13 +247,7 @@ describe("buildRenderModels", () => {
 	});
 
 	it("should handle mixed punctuation and lengths", () => {
-		const tokens = [
-			'"Hello,"',
-			"said",
-			"Bob.",
-			"(parenthetical)",
-			"content!",
-		];
+		const tokens = ['"Hello,"', "said", "Bob.", "(parenthetical)", "content!"];
 		const result = buildRenderModels(tokens);
 
 		expect(result).toHaveLength(5);

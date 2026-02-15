@@ -37,9 +37,7 @@ describe("useLocalStorage", () => {
 		it("should handle boolean values", () => {
 			localStorage.setItem("dark-mode", JSON.stringify(true));
 
-			const { result } = renderHook(() =>
-				useLocalStorage("dark-mode", false),
-			);
+			const { result } = renderHook(() => useLocalStorage("dark-mode", false));
 
 			expect(result.current[0]).toBe(true);
 		});
@@ -96,9 +94,7 @@ describe("useLocalStorage", () => {
 			});
 
 			expect(result.current[0]).toBe("updated");
-			expect(localStorage.getItem("test-key")).toBe(
-				JSON.stringify("updated"),
-			);
+			expect(localStorage.getItem("test-key")).toBe(JSON.stringify("updated"));
 		});
 
 		it("should persist number values", () => {
@@ -113,9 +109,7 @@ describe("useLocalStorage", () => {
 		});
 
 		it("should persist boolean values", () => {
-			const { result } = renderHook(() =>
-				useLocalStorage("enabled", false),
-			);
+			const { result } = renderHook(() => useLocalStorage("enabled", false));
 
 			act(() => {
 				result.current[1](true);
