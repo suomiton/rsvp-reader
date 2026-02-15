@@ -9,6 +9,7 @@ import { PageShell } from "../components/PageShell";
 import { WordDisplay } from "../components/WordDisplay";
 import { NumberInput } from "../components/NumberInput";
 import { PlayButton } from "../components/PlayButton";
+import { ProgressBar } from "../components/ProgressBar";
 
 export function ReaderPage() {
 	const { state, dispatch } = useAppState();
@@ -91,6 +92,14 @@ export function ReaderPage() {
 		}
 	}
 
+	function handleSeek(index: number) {
+		if (isPlayingRef.current) {
+			stopPlaying();
+		}
+		if (finished) setFinished(false);
+		dispatch({ type: "SET_INDEX", payload: index });
+	}
+
 	useKeyboard({
 		onSpaceToggle: togglePlayPause,
 		onArrowLeft: () => {
@@ -143,7 +152,7 @@ export function ReaderPage() {
 			>
 				{/* Top bar - positioned absolutely */}
 				{!isFocusMode && (
-					<div className="absolute top-0 left-0 right-0 flex items-center justify-between p-3">
+					<div className="absolute top-0 left-0 right-0 grid grid-cols-[auto_1fr_auto] items-center gap-3 p-3">
 						<button
 							type="button"
 							onClick={(e) => {
@@ -157,7 +166,15 @@ export function ReaderPage() {
 							<Back theme="outline" size="18" fill="currentColor" />
 							<span className="text-sm">Back</span>
 						</button>
-						<span className="text-sm text-gray/50">
+
+						<ProgressBar
+							current={state.index}
+							total={state.tokens.length}
+							onSeek={handleSeek}
+							className="min-w-[120px]"
+						/>
+
+						<span className="text-sm text-gray/50 whitespace-nowrap">
 							{state.index + 1} / {state.tokens.length}
 						</span>
 					</div>
