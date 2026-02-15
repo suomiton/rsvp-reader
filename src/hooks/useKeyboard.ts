@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 
 interface KeyboardHandlers {
-  onSpaceDown: () => void;
-  onSpaceUp: () => void;
-  onArrowLeft: () => void;
-  onArrowRight: () => void;
-  onEscape: () => void;
+	onSpaceDown: () => void;
+	onSpaceUp: () => void;
+	onArrowLeft: () => void;
+	onArrowRight: () => void;
+	onEscape: () => void;
 }
 
 /**
@@ -17,64 +17,64 @@ interface KeyboardHandlers {
  * - Handles window blur to release spacebar if user switches tabs.
  */
 export function useKeyboard(handlers: KeyboardHandlers): void {
-  const handlersRef = useRef(handlers);
-  handlersRef.current = handlers;
+	const handlersRef = useRef(handlers);
+	handlersRef.current = handlers;
 
-  const spaceHeldRef = useRef(false);
+	const spaceHeldRef = useRef(false);
 
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
-      ) {
-        return;
-      }
+	useEffect(() => {
+		function handleKeyDown(e: KeyboardEvent) {
+			if (
+				e.target instanceof HTMLInputElement ||
+				e.target instanceof HTMLTextAreaElement
+			) {
+				return;
+			}
 
-      switch (e.code) {
-        case "Space":
-          e.preventDefault();
-          if (!spaceHeldRef.current) {
-            spaceHeldRef.current = true;
-            handlersRef.current.onSpaceDown();
-          }
-          break;
-        case "ArrowLeft":
-          e.preventDefault();
-          handlersRef.current.onArrowLeft();
-          break;
-        case "ArrowRight":
-          e.preventDefault();
-          handlersRef.current.onArrowRight();
-          break;
-        case "Escape":
-          handlersRef.current.onEscape();
-          break;
-      }
-    }
+			switch (e.code) {
+				case "Space":
+					e.preventDefault();
+					if (!spaceHeldRef.current) {
+						spaceHeldRef.current = true;
+						handlersRef.current.onSpaceDown();
+					}
+					break;
+				case "ArrowLeft":
+					e.preventDefault();
+					handlersRef.current.onArrowLeft();
+					break;
+				case "ArrowRight":
+					e.preventDefault();
+					handlersRef.current.onArrowRight();
+					break;
+				case "Escape":
+					handlersRef.current.onEscape();
+					break;
+			}
+		}
 
-    function handleKeyUp(e: KeyboardEvent) {
-      if (e.code === "Space") {
-        spaceHeldRef.current = false;
-        handlersRef.current.onSpaceUp();
-      }
-    }
+		function handleKeyUp(e: KeyboardEvent) {
+			if (e.code === "Space") {
+				spaceHeldRef.current = false;
+				handlersRef.current.onSpaceUp();
+			}
+		}
 
-    function handleBlur() {
-      if (spaceHeldRef.current) {
-        spaceHeldRef.current = false;
-        handlersRef.current.onSpaceUp();
-      }
-    }
+		function handleBlur() {
+			if (spaceHeldRef.current) {
+				spaceHeldRef.current = false;
+				handlersRef.current.onSpaceUp();
+			}
+		}
 
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    window.addEventListener("blur", handleBlur);
+		window.addEventListener("keydown", handleKeyDown);
+		window.addEventListener("keyup", handleKeyUp);
+		window.addEventListener("blur", handleBlur);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-      window.removeEventListener("blur", handleBlur);
-    };
-  }, []);
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown);
+			window.removeEventListener("keyup", handleKeyUp);
+			window.removeEventListener("blur", handleBlur);
+		};
+	}, []);
 }

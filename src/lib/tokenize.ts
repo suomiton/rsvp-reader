@@ -6,9 +6,9 @@
  * - Supports Unicode (Finnish ä/ö/å, etc.)
  */
 export function tokenize(text: string): string[] {
-  return text
-    .replace(/\s+/g, " ")
-    .trim()
-    .split(" ")
-    .filter((t) => t.length > 0);
+	return text
+		.replace(/\s+/g, " ")
+		.trim()
+		.split(" ")
+		.filter((t) => t.length > 0);
 }
